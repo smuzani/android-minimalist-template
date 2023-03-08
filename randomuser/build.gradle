@@ -1,0 +1,60 @@
+plugins {
+  id 'com.android.library'
+  id 'org.jetbrains.kotlin.android'
+}
+
+android {
+  namespace 'com.minimalist.template.randomuser'
+  compileSdk 33
+
+  defaultConfig {
+    minSdk 26
+    targetSdk 33
+
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    consumerProguardFiles "consumer-rules.pro"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  kotlinOptions {
+    jvmTarget = '1.8'
+  }
+  buildFeatures {
+    compose true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion compose_version
+    kotlinCompilerVersion '1.5.21'
+  }
+  packagingOptions {
+    resources {
+      excludes += '/META-INF/{AL2.0,LGPL2.1}'
+    }
+  }
+}
+
+dependencies {
+  implementation project(':designSystem')
+
+  implementation "androidx.compose.ui:ui:$compose_version"
+  implementation "androidx.compose.material:material:$compose_version"
+  implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
+  implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+  implementation "com.squareup.retrofit2:retrofit:2.9.0"
+  implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+  implementation "com.google.android.material:material:1.4.0"
+  implementation "io.coil-kt:coil-compose:1.4.0"
+  implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
+  implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+  implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+
+}
