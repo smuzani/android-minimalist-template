@@ -4,13 +4,13 @@ buildscript {
         // check this if updating compose_version https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         compose_version = '1.4.3'
         core_ktx_version = '1.12.0'
-        material_version = '1.10.0'
+        material_version = '1.11.0'
         appcompat_version = '1.6.1'
-        activity_compose_version = '1.8.0'
+        activity_compose_version = '1.8.2'
         viewmodel_compose_version = '2.6.2'
         ui_compose_version = '1.5.1'
         retrofit_version = '2.9.0'
-        lifecycle_version = '2.6.2'
+        lifecycle_version = '2.7.0'
 
         // tests
         junit_version = '1.1.5'
@@ -21,14 +21,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

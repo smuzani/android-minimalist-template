@@ -53,7 +53,7 @@ dependencies {
 
   implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
   implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-  implementation "io.coil-kt:coil-compose:2.0.0"
-  implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
-  implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+  implementation "io.coil-kt:coil-compose:2.5.0"
+  implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+  implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
 }
