@@ -24,7 +24,8 @@ import coil.compose.rememberImagePainter
 import com.template.designSystem.atom.HLine
 
 @Composable
-fun UserScreen(vm: UserViewModel = viewModel()) {
+fun UserScreen() {
+  val vm: UserViewModel = viewModel()
   val userState by vm.selectedUser.collectAsState(null)
   Column(
     modifier = Modifier
@@ -81,6 +82,7 @@ fun UserScreen(vm: UserViewModel = viewModel()) {
   }
 }
 
+const val USER_DETAILS = "UserScreen"
 
 
 

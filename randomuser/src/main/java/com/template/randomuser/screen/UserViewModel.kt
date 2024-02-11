@@ -17,19 +17,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
-
-  var displayedScreen by mutableStateOf(Screen.USERS)
-    private set
-
   private val _selectedUser: MutableStateFlow<RandomUser?> = MutableStateFlow(null)
   val selectedUser: StateFlow<RandomUser?> = _selectedUser
   fun selectUser(user: RandomUser?) {
     _selectedUser.value = user
-    displayedScreen = Screen.USER_DETAILS
-  }
-
-  fun showAllUsers() {
-    displayedScreen = Screen.USERS
   }
 
   private val randomUserService = RandomUserRepositoryImpl(RetrofitBuilder.randomUserService)
@@ -51,10 +42,5 @@ class UserViewModel : ViewModel() {
         }
     }
   }
-}
-
-enum class Screen {
-  USERS,
-  USER_DETAILS
 }
 

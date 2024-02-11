@@ -27,7 +27,8 @@ import coil.compose.rememberImagePainter
 import com.template.designSystem.atom.HLine
 
 @Composable
-fun UsersScreen(vm: UserViewModel = viewModel()) {
+fun UsersScreen(onNavigateToDetails: () -> Unit) {
+  val vm: UserViewModel = viewModel()
   val usersState by vm.users.collectAsState(null)
   Column(
     modifier = Modifier
@@ -53,6 +54,7 @@ fun UsersScreen(vm: UserViewModel = viewModel()) {
         items(users) { user ->
           Row(modifier = Modifier.clickable {
             vm.selectUser(user)
+            onNavigateToDetails.invoke()
           }, verticalAlignment = Alignment.CenterVertically) {
             Image(
               painter = rememberImagePainter(user.picture.thumbnail),
@@ -73,3 +75,5 @@ fun UsersScreen(vm: UserViewModel = viewModel()) {
     }
   }
 }
+
+const val USERS = "UsersScreen"

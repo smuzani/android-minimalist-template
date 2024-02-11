@@ -9,6 +9,7 @@ buildscript {
         activity_compose_version = '1.8.2'
         viewmodel_compose_version = '2.6.2'
         ui_compose_version = '1.5.1'
+        nav_version = "2.7.7"
         retrofit_version = '2.9.0'
         lifecycle_version = '2.7.0'
 
