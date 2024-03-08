@@ -1,9 +1,6 @@
 package com.template.randomuser.screen
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.template.randomuser.network.RandomUser
@@ -17,12 +14,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
-  private val _selectedUser: MutableStateFlow<RandomUser?> = MutableStateFlow(null)
-  val selectedUser: StateFlow<RandomUser?> = _selectedUser
-  fun selectUser(user: RandomUser?) {
-    _selectedUser.value = user
-  }
-
   private val randomUserService = RandomUserRepositoryImpl(RetrofitBuilder.randomUserService)
 
   init {
@@ -34,7 +25,7 @@ class UserViewModel : ViewModel() {
 
   fun refreshUsers() {
     viewModelScope.launch {
-      randomUserService.get500RandomUsers()
+      randomUserService.get50RandomUsers()
         .flowOn(Dispatchers.IO)
         .catch { e -> Log.e("UserViewModel", "Error: $e") }
         .collect { users ->

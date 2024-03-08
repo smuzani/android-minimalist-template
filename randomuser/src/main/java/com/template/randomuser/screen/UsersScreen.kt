@@ -25,10 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.template.designSystem.atom.HLine
+import com.template.randomuser.network.RandomUser
 
 @Composable
-fun UsersScreen(onNavigateToDetails: () -> Unit) {
-  val vm: UserViewModel = viewModel()
+fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = viewModel()) {
   val usersState by vm.users.collectAsState(null)
   Column(
     modifier = Modifier
@@ -53,8 +53,7 @@ fun UsersScreen(onNavigateToDetails: () -> Unit) {
       ) {
         items(users) { user ->
           Row(modifier = Modifier.clickable {
-            vm.selectUser(user)
-            onNavigateToDetails.invoke()
+            onNavigateToDetails(user)
           }, verticalAlignment = Alignment.CenterVertically) {
             Image(
               painter = rememberImagePainter(user.picture.thumbnail),
