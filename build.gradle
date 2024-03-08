@@ -14,7 +14,8 @@ buildscript {
         lifecycle_version = '2.7.0'
 
         // tests
-        junit_version = '1.1.5'
+        junit_version = '4.13.2'
+        junit_ext_version = '1.1.5'
         espresso_version = '3.5.1'
     }
     repositories {
@@ -22,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:8.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
 
         // NOTE: Do not place your application dependencies here; they belong
