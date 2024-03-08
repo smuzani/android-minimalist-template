@@ -12,30 +12,27 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.template.designSystem.atom.HLine
+import com.template.randomuser.network.UserStore
 
 @Composable
-fun UserScreen(vm: UserViewModel = viewModel()) {
-  val userState by vm.selectedUser.collectAsState(null)
+fun UserScreen() {
+  val user = UserStore.getUser()
   Column(
     modifier = Modifier
       .fillMaxSize()
       .padding(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    if (userState == null) {
+    if (user == null) {
       Text("Loading...")
     } else {
-      val user = userState!!
       Text(
         modifier = Modifier.fillMaxWidth(),
         text = "User Profile",
@@ -81,6 +78,7 @@ fun UserScreen(vm: UserViewModel = viewModel()) {
   }
 }
 
+const val USER_DETAILS = "UserScreen"
 
 
 
