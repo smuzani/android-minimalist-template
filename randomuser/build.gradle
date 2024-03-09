@@ -48,7 +48,6 @@ dependencies {
   implementation "androidx.compose.material3:material3-android:$material_version"
   implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-//  implementation "com.google.android.material:material:$material_version"
   implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose_version"
 
   implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
