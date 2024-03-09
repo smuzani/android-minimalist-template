@@ -3,6 +3,7 @@ package com.template.randomuser.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +31,11 @@ import coil.compose.rememberAsyncImagePainter
 import com.template.randomuser.network.RandomUser
 
 @Composable
-fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = viewModel()) {
+fun UsersScreen(
+  onNavigateToDetails: (RandomUser) -> Unit,
+  innerPadding: PaddingValues,
+  vm: UserViewModel = viewModel()
+) {
   val usersState by vm.users.collectAsState(null)
   val users = remember(usersState) {
     usersState ?: emptyList()
@@ -38,15 +43,18 @@ fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = v
   Column(
     modifier = Modifier
       .fillMaxSize()
+      .padding(innerPadding)
       .padding(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    Button(onClick = { vm.refreshUsers() }) {
-      Text("Get Users")
+    Button(modifier = Modifier.fillMaxWidth(), onClick = { vm.refreshUsers() }) {
+      Text("Get Users", style = MaterialTheme.typography.headlineLarge)
     }
 
+    HorizontalDivider()
+
     if (usersState == null) {
-      Text("Loading…")
+      Text("Loading…", style = MaterialTheme.typography.displayLarge)
     } else {
       LazyColumn(
         modifier = Modifier.padding(4.dp)

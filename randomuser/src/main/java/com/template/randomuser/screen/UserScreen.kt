@@ -2,6 +2,7 @@ package com.template.randomuser.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,16 +23,17 @@ import coil.compose.rememberAsyncImagePainter
 import com.template.randomuser.network.UserStore
 
 @Composable
-fun UserScreen() {
+fun UserScreen(innerPadding: PaddingValues) {
   val user = UserStore.getUser()
   Column(
     modifier = Modifier
       .fillMaxSize()
+      .padding(innerPadding)
       .padding(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     if (user == null) {
-      Text("Loading...")
+      Text("Loading…", style = MaterialTheme.typography.displayLarge)
     } else {
       Text(
         modifier = Modifier.fillMaxWidth(),
