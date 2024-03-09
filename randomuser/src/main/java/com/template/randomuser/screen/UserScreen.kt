@@ -36,7 +36,7 @@ fun UserScreen() {
       Text(
         modifier = Modifier.fillMaxWidth(),
         text = "User Profile",
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.displayMedium,
         textAlign = TextAlign.Center
       )
       Spacer(modifier = Modifier.height(16.dp))
@@ -52,8 +52,8 @@ fun UserScreen() {
       Spacer(modifier = Modifier.height(24.dp))
       Text(
         modifier = Modifier.fillMaxWidth(),
-        text = "Name: ${user.name.first} ${user.name.last}",
-        style = MaterialTheme.typography.headlineSmall
+        text = "${user.name.first} ${user.name.last}",
+        style = MaterialTheme.typography.headlineLarge
       )
       Spacer(modifier = Modifier.height(8.dp))
       Text(

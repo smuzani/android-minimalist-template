@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,28 +32,26 @@ import com.template.randomuser.network.RandomUser
 @Composable
 fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = viewModel()) {
   val usersState by vm.users.collectAsState(null)
+  val users = remember(usersState) {
+    usersState ?: emptyList()
+  }
   Column(
     modifier = Modifier
       .fillMaxSize()
       .padding(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    Button(onClick = {
-      vm.refreshUsers()
-    }) {
+    Button(onClick = { vm.refreshUsers() }) {
       Text("Get Users")
     }
-    if (usersState == null) {
-      Text("Loading...")
-    } else {
-      val users = usersState!!
 
-      // TODO improve scrolling
+    if (usersState == null) {
+      Text("Loading…")
+    } else {
       LazyColumn(
-        modifier = Modifier
-          .padding(4.dp)
+        modifier = Modifier.padding(4.dp)
       ) {
-        items(users) { user ->
+        items(users, key = { user -> user.id.value }) { user ->
           UserRow(user, onNavigateToDetails)
           HorizontalDivider()
         }
@@ -65,7 +64,7 @@ fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = v
   Row(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(vertical = 2.dp)
+      .padding(vertical = 12.dp)
       .clickable {
         onNavigateToDetails(user)
       }, verticalAlignment = Alignment.CenterVertically
@@ -74,13 +73,13 @@ fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = v
       painter = rememberAsyncImagePainter(user.picture.thumbnail),
       contentDescription = "User photo",
       modifier = Modifier
-        .size(20.dp)
+        .size(64.dp)
         .clip(CircleShape)
     )
-    Spacer(modifier = Modifier.width(8.dp))
+    Spacer(modifier = Modifier.width(25.dp))
     Text(
       text = "${user.name.first} ${user.name.last}",
-      style = MaterialTheme.typography.headlineSmall
+      style = MaterialTheme.typography.headlineLarge
     )
   }
 }
