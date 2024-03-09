@@ -62,12 +62,13 @@ fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = v
 }
 
 @Composable fun UserRow(user: RandomUser, onNavigateToDetails: (RandomUser) -> Unit) {
-  Row(modifier = Modifier
-    .fillMaxWidth()
-    .padding(vertical = 2.dp)
-    .clickable {
-      onNavigateToDetails(user)
-    }, verticalAlignment = Alignment.CenterVertically
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(vertical = 2.dp)
+      .clickable {
+        onNavigateToDetails(user)
+      }, verticalAlignment = Alignment.CenterVertically
   ) {
     Image(
       painter = rememberAsyncImagePainter(user.picture.thumbnail),
