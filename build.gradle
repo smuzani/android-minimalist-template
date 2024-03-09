@@ -4,7 +4,7 @@ buildscript {
         // check this if updating compose_version https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         compose_version = '1.4.3'
         core_ktx_version = '1.12.0'
-        material_version = '1.11.0'
+        material_version = '1.2.1'
         appcompat_version = '1.6.1'
         activity_compose_version = '1.8.2'
         viewmodel_compose_version = '2.6.2'

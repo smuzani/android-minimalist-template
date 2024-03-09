@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -65,7 +65,7 @@ fun UsersScreen(onNavigateToDetails: (RandomUser) -> Unit, vm: UserViewModel = v
             Spacer(modifier = Modifier.width(8.dp))
             Text(
               text = "${user.name.first} ${user.name.last}",
-              style = MaterialTheme.typography.h5
+              style = MaterialTheme.typography.headlineMedium
             )
           }
           HLine()
