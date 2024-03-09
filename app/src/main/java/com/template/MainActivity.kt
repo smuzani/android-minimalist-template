@@ -12,6 +12,7 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     setContent {
       TemplateTheme {
+        // tonalElevation plays with Material 3 to decide the color
         Surface(tonalElevation = 5.dp) {
           TemplateNavHost()
         }

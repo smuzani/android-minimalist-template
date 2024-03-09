@@ -10,16 +10,21 @@ import com.template.randomuser.screen.USER_DETAILS
 import com.template.randomuser.screen.UserScreen
 import com.template.randomuser.screen.UsersScreen
 
+// This is the central nerve to navigate between screens
 @Composable
 fun TemplateNavHost() {
   val navController = rememberNavController()
   NavHost(navController, startDestination = USERS) {
     composable(USERS) {
-      UsersScreen(onNavigateToDetails = { selectedUser ->
-        UserStore.setUser(selectedUser)
-        navController.navigate(USER_DETAILS)
-      })
+      UsersScreen(
+        onNavigateToDetails = { selectedUser ->
+          UserStore.setUser(selectedUser)
+          navController.navigate(USER_DETAILS)
+        }
+      )
     }
-    composable(USER_DETAILS) { UserScreen() }
+    composable(USER_DETAILS) {
+      UserScreen()
+    }
   }
 }

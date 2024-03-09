@@ -44,15 +44,26 @@ android {
 dependencies {
   implementation project(':designSystem')
 
-  implementation "androidx.compose.ui:ui:$ui_compose_version"
-  implementation "androidx.compose.material3:material3-android:$material_version"
-  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-  implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose_version"
+  // Jetpack Compose UI
+  // Jetpack Compose is Android's modern toolkit for building native UIs.
+  implementation "androidx.compose.ui:ui:$ui_compose_version" // Core UI toolkit for Jetpack Compose
+  implementation "androidx.compose.material3:material3-android:$material_version" // Material Design 3 components for Jetpack Compose
 
-  implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-  implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-  implementation "io.coil-kt:coil-compose:2.5.0"
-  implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
-  implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+  // Lifecycle Libraries
+  // These libraries help you manage UI-related data in a lifecycle-conscious way, making it easier to handle data across the app's lifecycle.
+  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version" // Lifecycle runtime for Kotlin. Simplifies lifecycle management.
+  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version" // ViewModel utilities for Kotlin, aids in data management for UI controllers.
+  implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose_version" // Integration of ViewModels with Jetpack Compose.
+
+  // Networking
+  // Libraries for making network requests and handling responses.
+  implementation "com.squareup.retrofit2:retrofit:$retrofit_version" // Retrofit for making REST API calls.
+  implementation "com.squareup.retrofit2:converter-gson:$retrofit_version" // Gson converter for serializing and deserializing JSON with Retrofit.
+  implementation "com.squareup.okhttp3:logging-interceptor:4.12.0" // OkHttp logging interceptor for logging network requests and responses.
+  implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0" // Converter for using Kotlinx Serialization with Retrofit.
+
+  // Image Loading
+  // Libraries for loading and displaying images from the internet or other sources.
+  implementation "io.coil-kt:coil-compose:2.5.0" // Coil for Jetpack Compose. Simplifies image loading in Compose applications.
+
 }
