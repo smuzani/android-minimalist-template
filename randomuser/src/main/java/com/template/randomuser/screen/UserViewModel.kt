@@ -6,14 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.template.randomuser.network.RandomUser
 import com.template.randomuser.network.RandomUserRepositoryImpl
 import com.template.randomuser.network.RetrofitBuilder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserViewModel : ViewModel() {
+@HiltViewModel
+class UserViewModel @Inject constructor() : ViewModel() {
   private val randomUserService = RandomUserRepositoryImpl(RetrofitBuilder.randomUserService)
 
   init {

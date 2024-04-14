@@ -1,83 +1,104 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+  id 'com.android.application'
+  id 'kotlin-android'
+  id 'kotlin-kapt'
+  id 'dagger.hilt.android.plugin'
 }
 
 android {
-    compileSdk 34
+  compileSdk 34
 
-    defaultConfig {
-        applicationId "com.minimalist.template"
-        minSdk 26
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+  defaultConfig {
+    applicationId "com.minimalist.template"
+    minSdk 26
+    targetSdk 34
+    versionCode 1
+    versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary true
-        }
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    vectorDrawables {
+      useSupportLibrary true
     }
+  }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_17.toString()
+  }
+  buildFeatures {
+    compose true
+  }
+  composeOptions {
+    kotlinCompilerExtensionVersion compose_version
+  }
+  packagingOptions {
+    resources {
+      excludes += '/META-INF/{AL2.0,LGPL2.1}'
     }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-    }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
-    }
-    namespace 'com.template'
+  }
+  // Allow references to generated code
+  kapt {
+    correctErrorTypes true
+  }
+  namespace 'com.template'
 }
 
 dependencies {
-    // Project dependencies
-    // These are modules that the project depends on.
-    implementation project(':designSystem') // UI, color, themes, shared across modules
-    implementation project(':randomuser') // Sample module for randomuser.me API
+  // Project dependencies
+  // These are modules that the project depends on.
+  implementation project(':designSystem') // UI, color, themes, shared across modules
+  implementation project(':randomuser') // Sample module for randomuser.me API
 
-    // AndroidX libraries
-    // AndroidX is a major improvement to the original Android Support Library.
-    // It provides backward-compatible versions of Android components.
-    implementation "androidx.core:core-ktx:$core_ktx_version" // Core utilities for Kotlin extensions
-    implementation "androidx.appcompat:appcompat:$appcompat_version" // Backward-compatible versions of Android UI components
-    implementation "androidx.compose.material3:material3-android:$material_version" // Material Design 3 components for Jetpack Compose
-    implementation "androidx.compose.ui:ui:$ui_compose_version" // Core UI toolkit for Jetpack Compose
-    implementation "androidx.compose.ui:ui-tooling-preview:$ui_compose_version" // Tools for previewing Jetpack Compose UIs
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version" // Lifecycle components for managing activity and fragment lifecycles
-    implementation "androidx.activity:activity-compose:$activity_compose_version" // Integration of Compose with activities
-    implementation "androidx.navigation:navigation-compose:$nav_version" // Navigation components for Jetpack Compose
+  // AndroidX libraries
+  // AndroidX is a major improvement to the original Android Support Library.
+  // It provides backward-compatible versions of Android components.
+  implementation "androidx.core:core-ktx:$core_ktx_version" // Core utilities for Kotlin extensions
+  // Backward-compatible versions of Android UI components
+  implementation "androidx.appcompat:appcompat:$appcompat_version"
+  // Material Design 3 components for Jetpack Compose
+  implementation "androidx.compose.material3:material3-android:$material_version"
+  implementation "androidx.compose.ui:ui:$ui_compose_version" // Core UI toolkit for Jetpack Compose
+  // Tools for previewing Jetpack Compose UIs
+  implementation "androidx.compose.ui:ui-tooling-preview:$ui_compose_version"
+  // Lifecycle components for managing activity and fragment lifecycles
+  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+  // Integration of Compose with activities
+  implementation "androidx.activity:activity-compose:$activity_compose_version"
+  // Navigation components for Jetpack Compose
+  implementation "androidx.navigation:navigation-compose:$nav_version"
 
-    // Networking
-    // Libraries to help with performing network operations.
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version" // HTTP client for making network requests
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version" // Converter for serializing and deserializing JSON
+  // Networking
+  // Libraries to help with performing network operations.
+  // HTTP client for making network requests
+  implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+  // Converter for serializing and deserializing JSON
+  implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
-    // Testing
-    // Dependencies used for writing and running tests.
-    testImplementation "junit:junit:$junit_version" // JUnit framework for unit testing
-    androidTestImplementation "androidx.test.ext:junit:$junit_ext_version" // AndroidX test extensions for JUnit
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version" // Espresso for UI testing
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_compose_version" // Testing tools for Jetpack Compose
+  // Hilt
+  implementation "com.google.dagger:hilt-android:$hilt_version"
+  kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
-    // Debugging
-    // Tools useful during development for debugging and other purposes.
-    debugImplementation "androidx.compose.ui:ui-tooling:$ui_compose_version" // Tools for debugging Jetpack Compose UIs
+  // Testing
+  // Dependencies used for writing and running tests.
+  testImplementation "junit:junit:$junit_version" // JUnit framework for unit testing
+  // AndroidX test extensions for JUnit
+  androidTestImplementation "androidx.test.ext:junit:$junit_ext_version"
+  // Espresso for UI testing
+  androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+  // Testing tools for Jetpack Compose
+  androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_compose_version"
 
+  // Debugging
+  // Tools useful during development for debugging and other purposes.
+  debugImplementation "androidx.compose.ui:ui-tooling:$ui_compose_version"
+  // Tools for debugging Jetpack Compose UIs
 }
