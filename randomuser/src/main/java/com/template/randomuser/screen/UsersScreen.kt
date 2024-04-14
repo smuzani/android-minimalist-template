@@ -34,7 +34,7 @@ import com.template.randomuser.network.RandomUser
 fun UsersScreen(
   onNavigateToDetails: (RandomUser) -> Unit,
   innerPadding: PaddingValues,
-  vm: UserViewModel = viewModel()
+  vm: UserViewModel
 ) {
   val usersState by vm.users.collectAsState(null)
   val users = remember(usersState) {
