@@ -51,37 +51,23 @@ dependencies {
   implementation project(':designSystem')
 
   // Jetpack Compose UI
-  // Jetpack Compose is Android's modern toolkit for building native UIs.
-  implementation "androidx.compose.ui:ui:$ui_compose_version" // Core UI toolkit for Jetpack Compose
-  // Material Design 3 components for Jetpack Compose
-  implementation "androidx.compose.material3:material3-android:$material_version"
+  implementation libs.compose.ui
+  implementation libs.compose.material3.android
 
   // Lifecycle Libraries
-  // These libraries help you manage UI-related data in a lifecycle-conscious way, making it easier to handle data across the app's lifecycle.
-  // Lifecycle runtime for Kotlin. Simplifies lifecycle management.
-  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-  // ViewModel utilities for Kotlin, aids in data management for UI controllers.
-  implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-  // Integration of ViewModels with Jetpack Compose.
-  implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose_version"
+  implementation libs.lifecycle.runtime.ktx
+  implementation libs.lifecycle.viewmodel.ktx
 
   // Networking
-  // Libraries for making network requests and handling responses.
-  // Retrofit for making REST API calls.
-  implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-  // Gson converter for serializing and deserializing JSON with Retrofit.
-  implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-  // OkHttp logging interceptor for logging network requests and responses.
-  implementation "com.squareup.okhttp3:logging-interceptor:4.12.0"
-  // Converter for using Kotlinx Serialization with Retrofit.
-  implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+  implementation libs.retrofit
+  implementation libs.retrofit.converter.gson
+  implementation libs.logging.interceptor
+  implementation libs.retrofit2.kotlinx.serialization.converter
 
   // Image Loading
-  // Libraries for loading and displaying images from the internet or other sources.
-  // Coil for Jetpack Compose. Simplifies image loading in Compose applications.
-  implementation "io.coil-kt:coil-compose:2.5.0"
+  implementation libs.coil.compose
 
   // Hilt for DI
-  implementation "com.google.dagger:hilt-android:$hilt_version"
-  kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+  implementation libs.hilt.android
+  kapt libs.hilt.android.compiler
 }
