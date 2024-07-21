@@ -32,19 +32,18 @@ android {
     compose true
   }
   composeOptions {
-    kotlinCompilerExtensionVersion compose_version
+    kotlinCompilerExtensionVersion = compose_version
   }
 }
 
 dependencies {
-  implementation "androidx.core:core-ktx:$core_ktx_version"
-  implementation "androidx.appcompat:appcompat:$appcompat_version"
-  implementation "androidx.compose.material3:material3-android:$material_version"
-  implementation "androidx.compose.ui:ui:$ui_compose_version"
-  implementation "androidx.compose.ui:ui-tooling-preview:$ui_compose_version"
-  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-  implementation "androidx.activity:activity-compose:$activity_compose_version"
-  testImplementation "junit:junit:$junit_version"
-  androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_compose_version"
-  debugImplementation "androidx.compose.ui:ui-tooling:$ui_compose_version"
+  implementation libs.core.ktx
+  implementation libs.appcompat
+  implementation libs.compose.material3.android
+  implementation libs.compose.ui
+  implementation libs.compose.ui.tooling
+  implementation libs.lifecycle.runtime.ktx
+  implementation libs.activity.compose
+  testImplementation libs.junit
+  debugImplementation libs.compose.ui.tooling
 }

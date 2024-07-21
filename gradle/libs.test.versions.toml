@@ -1,0 +1,9 @@
+[versions]
+junit = "4.13.2"
+junit_ext = "1.2.1"
+espresso = "3.6.1"
+
+[libraries]
+junit = { module = "junit:junit", version.ref = "junit" }
+junit-ext = { module = "androidx.test.ext:junit", version.ref = "junit_ext" }
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }

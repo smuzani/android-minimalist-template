@@ -1,32 +1,16 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        // check this if updating compose_version https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         compose_version = '1.4.3'
-        core_ktx_version = '1.13.1'
-        material_version = '1.2.1'
-        appcompat_version = '1.7.0'
-        activity_compose_version = '1.9.0'
-        viewmodel_compose_version = '2.8.3'
-        ui_compose_version = '1.5.1'
-        nav_version = "2.7.7"
-        retrofit_version = '2.9.0'
-        lifecycle_version = '2.8.3'
-        hilt_version = '2.51.1'
-
-        // tests
-        junit_version = '4.13.2'
-        junit_ext_version = '1.2.1'
-        espresso_version = '3.6.1'
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath libs.gradle
+        classpath libs.kotlin.gradle.plugin
+        classpath libs.hilt.android.gradle.plugin
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

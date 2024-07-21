@@ -38,7 +38,7 @@ android {
     compose true
   }
   composeOptions {
-    kotlinCompilerExtensionVersion compose_version
+    kotlinCompilerExtensionVersion = compose_version
   }
   packagingOptions {
     resources {
@@ -58,48 +58,27 @@ dependencies {
   implementation project(':designSystem') // UI, color, themes, shared across modules
   implementation project(':randomuser') // Sample module for randomuser.me API
 
-  // AndroidX libraries
-  // AndroidX is a major improvement to the original Android Support Library.
-  // It provides backward-compatible versions of Android components.
-  implementation "androidx.core:core-ktx:$core_ktx_version" // Core utilities for Kotlin extensions
-  // Backward-compatible versions of Android UI components
-  implementation "androidx.appcompat:appcompat:$appcompat_version"
-  // Material Design 3 components for Jetpack Compose
-  implementation "androidx.compose.material3:material3-android:$material_version"
-  implementation "androidx.compose.ui:ui:$ui_compose_version" // Core UI toolkit for Jetpack Compose
-  // Tools for previewing Jetpack Compose UIs
-  implementation "androidx.compose.ui:ui-tooling-preview:$ui_compose_version"
-  // Lifecycle components for managing activity and fragment lifecycles
-  implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-  // Integration of Compose with activities
-  implementation "androidx.activity:activity-compose:$activity_compose_version"
-  // Navigation components for Jetpack Compose
-  implementation "androidx.navigation:navigation-compose:$nav_version"
+  implementation libs.core.ktx
+  implementation libs.appcompat
+  implementation libs.compose.material3.android
+  implementation libs.compose.ui.tooling
+  implementation libs.lifecycle.runtime.ktx
+  implementation libs.activity.compose
+  implementation libs.navigation.compose
 
   // Networking
-  // Libraries to help with performing network operations.
-  // HTTP client for making network requests
-  implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-  // Converter for serializing and deserializing JSON
-  implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+  implementation libs.retrofit
+  implementation libs.retrofit.converter.gson
 
   // Hilt
-  implementation "com.google.dagger:hilt-android:$hilt_version"
-  kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-  implementation "androidx.hilt:hilt-navigation-compose:1.2.0"
+  implementation libs.hilt.android
+  kapt libs.hilt.android.compiler
+  implementation libs.hilt.navigation.compose
 
   // Testing
-  // Dependencies used for writing and running tests.
-  testImplementation "junit:junit:$junit_version" // JUnit framework for unit testing
-  // AndroidX test extensions for JUnit
-  androidTestImplementation "androidx.test.ext:junit:$junit_ext_version"
-  // Espresso for UI testing
-  androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-  // Testing tools for Jetpack Compose
-  androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_compose_version"
+  testImplementation libs.junit
+  androidTestImplementation libs.ext.junit
+  androidTestImplementation libs.espresso.core
 
-  // Debugging
-  // Tools useful during development for debugging and other purposes.
-  // Tools for debugging Jetpack Compose UIs
-  debugImplementation "androidx.compose.ui:ui-tooling:$ui_compose_version"
+  debugImplementation libs.compose.ui.tooling
 }
