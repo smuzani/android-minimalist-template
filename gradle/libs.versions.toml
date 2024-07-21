@@ -1,0 +1,38 @@
+[versions]
+gradle = "8.5.1"
+kotlinGradlePlugin = "1.8.10"
+ktx = "1.13.1"
+compose_version = "1.4.3"
+compose_ui = "1.5.1"
+material = "1.2.1"
+appcompat = "1.7.0"
+compose_activity = "1.9.0"
+viewmodel_compose_version = "2.8.3"
+compose_nav = "2.7.7"
+retrofit = "2.9.0"
+lifecycle = "2.8.3"
+hilt = "2.51.1"
+hilt_nav_compose = "1.2.0"
+
+
+[libraries]
+core_ktx = { module = "androidx.core:core-ktx", version.ref = "ktx" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+compose-material3-android = { module = "androidx.compose.material3:material3-android", version.ref = "material" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose_ui" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "compose_activity" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "compose_nav" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt_nav_compose" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose_ui" }
+
+[plugins]
+
+[bundles]
