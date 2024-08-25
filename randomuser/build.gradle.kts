@@ -50,6 +50,7 @@ android {
 
 dependencies {
   implementation(project(":designSystem"))
+  implementation(project(":spine"))
 
   // Jetpack Compose UI
   implementation(libs.compose.ui)

@@ -60,6 +60,7 @@ dependencies {
   // These are modules that the project depends on.
   implementation(project(":designSystem")) // UI, color, themes, shared across modules
   implementation(project(":randomuser")) // Sample module for randomuser.me API
+  implementation(project(":spine")) // Communication between screens and modules
 
   implementation(libs.core.ktx)
   implementation(libs.appcompat)

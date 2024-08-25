@@ -2,7 +2,6 @@ package com.template.randomuser.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,14 +21,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.template.randomuser.network.UserStore
+import com.template.spine.Nerve
 
 @Composable
-fun UserScreen(innerPadding: PaddingValues) {
+fun UserScreen(nerve: Nerve) {
   val user = UserStore.getUser()
+
+  LaunchedEffect(user) {
+    nerve.setTitle(
+      user?.name?.first?.plus(" ")?.plus(user.name.last) ?: "User Profile"
+    )
+  }
+
   Column(
     modifier = Modifier
       .fillMaxSize()
-      .padding(innerPadding)
+      .padding(nerve.currentScreenPadding)
       .padding(16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
