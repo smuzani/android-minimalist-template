@@ -1,6 +1,5 @@
 package com.template.spine
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +11,19 @@ class Nerve {
   private var _title = MutableStateFlow("")
   val title: StateFlow<String> = _title
   fun setTitle(title: String) {
-    Log.d("Nerve", "setTitle: $title")
     _title.value = title
+  }
+
+  private var _bottomBarButtonText = MutableStateFlow("")
+  val bottomBarButtonText: StateFlow<String> = _bottomBarButtonText
+  fun setBottomBarButtonText(text: String) {
+    _bottomBarButtonText.value = text
+  }
+
+  private var _onBottomBarButtonClicked = MutableStateFlow { }
+  val onBottomBarButtonClicked: StateFlow<() -> Unit> = _onBottomBarButtonClicked
+  fun setOnBottomBarButtonClicked(onClick: () -> Unit) {
+    _onBottomBarButtonClicked.value = onClick
   }
 
   // Does not need to be a StateFlow because it is only set and accessed once

@@ -27,10 +27,10 @@ import com.template.spine.Nerve
 fun UserScreen(nerve: Nerve) {
   val user = UserStore.getUser()
 
-  LaunchedEffect(user) {
-    nerve.setTitle(
-      user?.name?.first?.plus(" ")?.plus(user.name.last) ?: "User Profile"
-    )
+  LaunchedEffect(Unit) {
+    nerve.setTitle(user?.name?.first?.plus(" ")?.plus(user.name.last) ?: "User Profile")
+    nerve.setBottomBarButtonText("")
+    nerve.setOnBottomBarButtonClicked { }
   }
 
   Column(
@@ -89,6 +89,5 @@ fun UserScreen(nerve: Nerve) {
 }
 
 const val USER_DETAILS = "UserScreen"
-
 
 
