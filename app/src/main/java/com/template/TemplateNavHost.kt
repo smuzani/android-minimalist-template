@@ -1,6 +1,5 @@
 package com.template
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -12,24 +11,25 @@ import com.template.randomuser.screen.USER_DETAILS
 import com.template.randomuser.screen.UserScreen
 import com.template.randomuser.screen.UserViewModel
 import com.template.randomuser.screen.UsersScreen
+import com.template.spine.Nerve
 
 // This is the central nerve to navigate between screens
 @Composable
-fun TemplateNavHost(innerPadding: PaddingValues) {
+fun TemplateNavHost(nerve: Nerve) {
   val navController = rememberNavController()
   NavHost(navController, startDestination = USERS) {
     composable(USERS) {
       val viewModel = hiltViewModel<UserViewModel>()
       UsersScreen(
+        nerve,
         onNavigateToDetails = { selectedUser ->
           UserStore.setUser(selectedUser)
           navController.navigate(USER_DETAILS)
-        },
-        innerPadding, viewModel
+        }, viewModel
       )
     }
     composable(USER_DETAILS) {
-      UserScreen(innerPadding)
+      UserScreen(nerve)
     }
   }
 }

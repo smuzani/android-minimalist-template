@@ -10,3 +10,4 @@ rootProject.name = "Template"
 include ':app'
 include ':designSystem'
 include ':randomuser'
+include ':spine'
