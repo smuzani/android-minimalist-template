@@ -1,6 +1,7 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -28,12 +29,6 @@ android {
   }
   kotlinOptions {
     jvmTarget = JavaVersion.VERSION_17.toString()
-  }
-  buildFeatures {
-    compose = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = rootProject.libs.versions.compose.compiler.get()
   }
 }
 

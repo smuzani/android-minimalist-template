@@ -4,15 +4,13 @@ coilCompose = "2.5.0"
 compose_activity = "1.9.1"
 compose_nav = "2.7.7"
 compose_ui = "1.6.8"
-# used in composeOptions {} in build.gradle.kts
-compose_compiler = "1.4.3"
 espressoCore = "3.6.1"
 gradle = "8.5.2"
 hilt = "2.51.1"
 hilt_nav_compose = "1.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-kotlinGradlePlugin = "1.8.10"
+kotlin = "2.0.0"
 ktx = "1.13.1"
 lifecycle = "2.8.4"
 loggingInterceptor = "4.12.0"
@@ -36,7 +34,6 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt_nav_compose" }
 junit = { module = "junit:junit", version.ref = "junit" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
@@ -46,5 +43,9 @@ retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", ve
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
 
 [plugins]
+# used for compose plugin
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
 
 [bundles]
