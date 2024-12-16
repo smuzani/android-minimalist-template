@@ -1,14 +1,14 @@
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
-  id("org.jetbrains.kotlin.kapt")
+  id("com.google.devtools.ksp")
   id("dagger.hilt.android.plugin")
   alias(libs.plugins.compose.compiler)
 }
 
 android {
   namespace = "com.minimalist.template.randomuser"
-  compileSdk = 34
+  compileSdk = 35
 
   defaultConfig {
     minSdk = 26
@@ -37,10 +37,6 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
-  // Allow references to generated code
-  kapt {
-    correctErrorTypes = true
-  }
 }
 
 dependencies {
@@ -66,5 +62,5 @@ dependencies {
 
   // Hilt for DI
   implementation(libs.hilt.android)
-  kapt(libs.hilt.android.compiler)
+  ksp(libs.hilt.android.compiler)
 }

@@ -1,18 +1,18 @@
 plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
-  id("org.jetbrains.kotlin.kapt")
+  id("com.google.devtools.ksp")
   id("dagger.hilt.android.plugin")
   alias(libs.plugins.compose.compiler)
 }
 
 android {
-  compileSdk = 34
+  compileSdk = 35
 
   defaultConfig {
     applicationId = "com.minimalist.template"
     minSdk = 26
-    targetSdk = 34
+    targetSdk = 35
     versionCode = 1
     versionName = "1.0"
 
@@ -43,10 +43,6 @@ android {
       excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
   }
-  // Allow references to generated code
-  kapt {
-    correctErrorTypes = true
-  }
   namespace = "com.template"
 }
 
@@ -71,7 +67,7 @@ dependencies {
 
   // Hilt
   implementation(libs.hilt.android)
-  kapt(libs.hilt.android.compiler)
+  ksp(libs.hilt.android.compiler)
   implementation(libs.hilt.navigation.compose)
 
   // Testing
