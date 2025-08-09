@@ -6,7 +6,7 @@ plugins {
 
 android {
   namespace = "com.minimalist.template.designSystem"
-  compileSdk = 35
+  compileSdk = 36
 
   defaultConfig {
     minSdk = 26
