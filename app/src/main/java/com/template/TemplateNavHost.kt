@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.template.randomuser.network.UserStore
+import com.template.randomuser.network.RandomUser
 import com.template.randomuser.screen.USERS
 import com.template.randomuser.screen.USER_DETAILS
 import com.template.randomuser.screen.UserScreen
@@ -23,13 +23,14 @@ fun TemplateNavHost(nerve: Nerve) {
       UsersScreen(
         nerve,
         onNavigateToDetails = { selectedUser ->
-          UserStore.setUser(selectedUser)
+          navController.currentBackStackEntry?.savedStateHandle?.set("user", selectedUser)
           navController.navigate(USER_DETAILS)
         }, viewModel
       )
     }
-    composable(USER_DETAILS) {
-      UserScreen(nerve)
+    composable(USER_DETAILS) { backStackEntry ->
+      val user = navController.previousBackStackEntry?.savedStateHandle?.get<RandomUser>("user")
+      UserScreen(nerve, user)
     }
   }
 }

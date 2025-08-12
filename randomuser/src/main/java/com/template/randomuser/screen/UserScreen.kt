@@ -20,12 +20,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.template.randomuser.network.UserStore
+import com.template.randomuser.network.RandomUser
 import com.template.spine.Nerve
 
 @Composable
-fun UserScreen(nerve: Nerve) {
-  val user = UserStore.getUser()
+fun UserScreen(nerve: Nerve, user: RandomUser?) {
 
   LaunchedEffect(Unit) {
     nerve.setTitle(user?.name?.first?.plus(" ")?.plus(user.name.last) ?: "User Profile")
