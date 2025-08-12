@@ -15,7 +15,7 @@ Reminder: Rename `Template` and the package name to your app name.
 
 **Logic:** Kotlin Flow (Reactive programming), Hilt (DI)
 
-**Tests**: JUnit (unit). UI tests can be done on [Maestro](https://maestro.mobile.dev/). One example is given in [Intro.yaml](https://github.com/smuzani/android-minimalist-template/blob/main/app/src/maestro/Intro.yaml). 
+**Tests:** JUnit (unit). UI tests can be done on [Maestro](https://maestro.mobile.dev/). One example is given in [Intro.yaml](https://github.com/smuzani/android-minimalist-template/blob/main/app/src/maestro/Intro.yaml). 
 
 ****
 
@@ -31,7 +31,9 @@ The cheat here is to keep the code denser. There should be no tunnel of 'clean c
 
 ### AI Ready
 
-Related to the peripheral vision, you should be able to paste a file and related interfaces into GPT and ask it to add features. A file should not have too many implementation details. If AI can't navigate it easily, humans will have trouble too.
+Related to the peripheral vision, files are structured so AI tools with full codebase access can easily understand and modify them. A file should not have too many implementation details scattered across the project. If AI can't navigate it easily, humans will have trouble too.
+
+Thanks to Sabrina Ramonov (https://www.sabrina.dev/p/ultimate-ai-coding-guide-claude-code) for the CLAUDE.md template
 
 ### Minimalist
 
