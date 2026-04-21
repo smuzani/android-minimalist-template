@@ -16,21 +16,22 @@ import com.template.spine.Nerve
 // This is the central nerve to navigate between screens
 @Composable
 fun TemplateNavHost(nerve: Nerve) {
-  val navController = rememberNavController()
-  NavHost(navController, startDestination = USERS) {
-    composable(USERS) {
-      val viewModel = hiltViewModel<UserViewModel>()
-      UsersScreen(
-        nerve,
-        onNavigateToDetails = { selectedUser ->
-          navController.currentBackStackEntry?.savedStateHandle?.set("user", selectedUser)
-          navController.navigate(USER_DETAILS)
-        }, viewModel
-      )
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = USERS) {
+        composable(USERS) {
+            val viewModel = hiltViewModel<UserViewModel>()
+            UsersScreen(
+                nerve,
+                onNavigateToDetails = { selectedUser ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("user", selectedUser)
+                    navController.navigate(USER_DETAILS)
+                },
+                viewModel,
+            )
+        }
+        composable(USER_DETAILS) { backStackEntry ->
+            val user = navController.previousBackStackEntry?.savedStateHandle?.get<RandomUser>("user")
+            UserScreen(nerve, user)
+        }
     }
-    composable(USER_DETAILS) { backStackEntry ->
-      val user = navController.previousBackStackEntry?.savedStateHandle?.get<RandomUser>("user")
-      UserScreen(nerve, user)
-    }
-  }
 }

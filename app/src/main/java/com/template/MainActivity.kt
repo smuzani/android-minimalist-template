@@ -24,62 +24,63 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-  private val nerve = Nerve()
+    private val nerve = Nerve()
 
-  @OptIn(ExperimentalMaterial3Api::class)
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    // Hide the default action bar to replace with Material3's TopAppBar
-    actionBar?.hide()
-    setContent {
-      val title by nerve.title.collectAsState()
-      val bottomBarButtonText by nerve.bottomBarButtonText.collectAsState()
-      val onBottomBarButtonClicked by nerve.onBottomBarButtonClicked.collectAsState()
+    @OptIn(ExperimentalMaterial3Api::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Hide the default action bar to replace with Material3's TopAppBar
+        actionBar?.hide()
+        setContent {
+            val title by nerve.title.collectAsState()
+            val bottomBarButtonText by nerve.bottomBarButtonText.collectAsState()
+            val onBottomBarButtonClicked by nerve.onBottomBarButtonClicked.collectAsState()
 
-      TemplateTheme {
-        // tonalElevation plays with Material 3 to decide the color
-        Surface(tonalElevation = 5.dp) {
-          Scaffold(
-            topBar = {
-              // can be TopAppBar, CenterAlignedTopAppBar, MediumTopAppBar, LargeTopAppBar
-              CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                  containerColor = MaterialTheme.colorScheme.primaryContainer,
-                  titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                  Text(title)
+            TemplateTheme {
+                // tonalElevation plays with Material 3 to decide the color
+                Surface(tonalElevation = 5.dp) {
+                    Scaffold(
+                        topBar = {
+                            // can be TopAppBar, CenterAlignedTopAppBar, MediumTopAppBar, LargeTopAppBar
+                            CenterAlignedTopAppBar(
+                                colors =
+                                    TopAppBarDefaults.topAppBarColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        titleContentColor = MaterialTheme.colorScheme.primary,
+                                    ),
+                                title = {
+                                    Text(title)
+                                },
+                            )
+                        },
+                        bottomBar = {
+                            BottomBar(bottomBarButtonText, onBottomBarButtonClicked)
+                        },
+                    ) { innerPadding ->
+                        nerve.currentScreenPadding = innerPadding
+                        TemplateNavHost(nerve)
+                    }
                 }
-              )
-            },
-            bottomBar = {
-              BottomBar(bottomBarButtonText, onBottomBarButtonClicked)
             }
-          ) { innerPadding ->
-            nerve.currentScreenPadding = innerPadding
-            TemplateNavHost(nerve)
-          }
         }
-      }
     }
-  }
 
-  // Sample bottom bar. This can be a button, an actual bottom bar, whatever you deem suitable
-  @Composable
-  private fun BottomBar(
-    bottomBarButtonText: String,
-    onBottomBarButtonClicked: () -> Unit
-  ) {
-    if (bottomBarButtonText.isNotEmpty()) {
-      Button(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 32.dp, vertical = 8.dp),
-        onClick = onBottomBarButtonClicked
-      ) {
-        Text(bottomBarButtonText, style = MaterialTheme.typography.headlineMedium)
-      }
+    // Sample bottom bar. This can be a button, an actual bottom bar, whatever you deem suitable
+    @Composable
+    private fun BottomBar(
+        bottomBarButtonText: String,
+        onBottomBarButtonClicked: () -> Unit,
+    ) {
+        if (bottomBarButtonText.isNotEmpty()) {
+            Button(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp, vertical = 8.dp),
+                onClick = onBottomBarButtonClicked,
+            ) {
+                Text(bottomBarButtonText, style = MaterialTheme.typography.headlineMedium)
+            }
+        }
     }
-  }
 }
-

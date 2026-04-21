@@ -1,42 +1,42 @@
 plugins {
-  id("com.android.library")
-  id("org.jetbrains.kotlin.android")
-  alias(libs.plugins.compose.compiler)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
-  namespace = "com.template.spine"
-  compileSdk = 36
+    namespace = "com.template.spine"
+    compileSdk = 36
 
-  defaultConfig {
-    minSdk = 26
+    defaultConfig {
+        minSdk = 26
 
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    consumerProguardFiles("consumer-rules.pro")
-  }
-
-  buildTypes {
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-  }
-  kotlinOptions {
-    jvmTarget = JavaVersion.VERSION_17.toString()
-  }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
 
-  implementation(libs.core.ktx)
-  implementation(libs.compose.ui)
-  implementation(libs.compose.material3.android)
+    implementation(libs.core.ktx)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.material3.android)
 
-  testImplementation(libs.junit)
-  androidTestImplementation(libs.ext.junit)
-  androidTestImplementation(libs.espresso.core)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
