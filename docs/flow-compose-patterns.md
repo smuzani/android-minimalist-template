@@ -1,6 +1,6 @@
 # Flow + Compose patterns
 
-The rule for this template:
+The rule:
 
 - **Repositories return cold `Flow<T>`.** Cold Flows compose — `combine`, `flatMapLatest`, cache-then-network, merging across repos.
 - **ViewModels expose hot `StateFlow<UiState<T>>`** built with `.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState.Pending())`. No bare `viewModelScope.launch { flow.collect { ... } }`.
@@ -11,18 +11,18 @@ The rule for this template:
 ### Repository — cold Flow, non-null
 
 ```kotlin
-interface RandomUserRepository {
-    fun get50RandomUsers(): Flow<List<RandomUser>>
+interface UserRepository {
+    fun getUsers(): Flow<List<User>>
 }
 
-class RandomUserRepositoryImpl(private val service: RandomUserService) : RandomUserRepository {
-    override fun get50RandomUsers(): Flow<List<RandomUser>> = flow {
-        emit(service.getRandomUsers().results)
+class UserRepositoryImpl(private val service: UserService) : UserRepository {
+    override fun getUsers(): Flow<List<User>> = flow {
+        emit(service.getUsers().results)
     }
 }
 ```
 
-No `flowOn(Dispatchers.IO)` — Retrofit's `suspend` functions already dispatch on OkHttp's pool.
+Don't wrap with `flowOn(Dispatchers.IO)` if your network client already dispatches off the main thread (Retrofit's `suspend` functions do; OkHttp handles the thread pool).
 
 ### ViewModel — `asUiState()`, trigger flow for imperative refresh
 
@@ -30,12 +30,12 @@ No `flowOn(Dispatchers.IO)` — Retrofit's `suspend` functions already dispatch 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    repository: RandomUserRepository,
+    repository: UserRepository,
 ) : ViewModel() {
     private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1).also { it.tryEmit(Unit) }
 
-    val uiState: StateFlow<UiState<List<RandomUser>>> = refreshTrigger
-        .flatMapLatest { repository.get50RandomUsers().asUiState() }
+    val uiState: StateFlow<UiState<List<User>>> = refreshTrigger
+        .flatMapLatest { repository.getUsers().asUiState() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState.Pending())
 
     fun refreshUsers() { refreshTrigger.tryEmit(Unit) }
@@ -43,7 +43,7 @@ class UserViewModel @Inject constructor(
 ```
 
 - `asUiState()` wraps the repo Flow: emits `Pending` on start, `Done(data)` on success, `Failed(message)` on error.
-- `MutableSharedFlow<Unit>(replay = 1)` seeds the first emission; tapping the refresh button re-emits.
+- `MutableSharedFlow<Unit>(replay = 1)` seeds the first emission; tapping refresh re-emits.
 - `flatMapLatest` cancels any in-flight request when a new trigger arrives.
 - `WhileSubscribed(5_000)` keeps the flow alive across brief recompositions / config changes, tears down if nothing subscribes for 5 s.
 
@@ -63,7 +63,7 @@ when (val s = state) {
 
 ## `UiState<T>` — the shared async state type
 
-All async UI state flows through `UiState<T>` in `spine/`:
+All async UI state flows through a single `UiState<T>`:
 
 ```kotlin
 sealed interface UiState<out T> {
@@ -73,11 +73,11 @@ sealed interface UiState<out T> {
 }
 ```
 
-**Why Pending / Done / Failed** — symmetric vocabulary, all expressing "has this settled?". Loading/Success/Error mixes grammatical forms and `Error` collides with Kotlin's `kotlin.Error` Throwable. `Done` and `Failed` are unambiguous terminal states; `Pending` is unambiguous non-terminal.
+**Why Pending / Done / Failed** — symmetric vocabulary, all expressing "has this settled?". Loading/Success/Error mixes grammatical forms and `Error` collides with `kotlin.Error`. `Done` and `Failed` are unambiguous terminal states; `Pending` is unambiguous non-terminal.
 
 **`Pending(previous: T?)`** handles the refresh case. `Pending(previous = null)` is initial load (spinner, no data). `Pending(previous = lastList)` is pull-to-refresh (show old list + spinner). The UI checks `s.previous != null` to decide.
 
-**`asUiState()` extension** lives alongside the type in `spine/UiState.kt`:
+**`asUiState()` extension** lives alongside the type:
 
 ```kotlin
 fun <T> Flow<T>.asUiState(): Flow<UiState<T>> = this
@@ -108,7 +108,7 @@ when (val s = state) {
 }
 ```
 
-CLAUDE.md's helper-extraction rule applies to Composables — reuse ≥ 2 places, or the block is opaque. A 5-line `Text(...)` or `Column { Text; Text }` clears neither bar. Extract *a specific branch* when it grows, not all branches preemptively.
+Extract a branch only when it grows or when the Composable is reused in ≥ 2 places. A 5-line `Text(...)` or `Column { Text; Text }` doesn't clear the bar.
 
 ## Combining sources
 
@@ -123,12 +123,43 @@ fun users(): Flow<List<User>> = combine(
 
 If this had been `suspend fun users(): List<User>`, you couldn't express it without awkward glue in the ViewModel.
 
+## Bridging callback-based APIs
+
+When a third-party SDK uses listeners/callbacks (payment SDKs, Bluetooth, geolocation, legacy Java APIs), adapt at the repository layer — don't reach for `viewModelScope.launch { sdk.doThing { result -> ... } }`. That leaks the callback's control flow into the ViewModel and loses cancellation.
+
+**Single result → `suspendCancellableCoroutine`:**
+
+```kotlin
+suspend fun startTransaction(params: TransactionParams): TransactionResult =
+    suspendCancellableCoroutine { cont ->
+        val listener = object : TransactionListener {
+            override fun onResult(result: TransactionResult) = cont.resume(result)
+            override fun onError(e: Throwable) = cont.resumeWithException(e)
+        }
+        sdk.startTransaction(params, listener)
+        cont.invokeOnCancellation { sdk.cancelTransaction() }
+    }
+```
+
+**Stream of events → `callbackFlow`:**
+
+```kotlin
+fun transactionEvents(): Flow<TransactionEvent> = callbackFlow {
+    val listener = TransactionListener { event -> trySend(event) }
+    sdk.addListener(listener)
+    awaitClose { sdk.removeListener(listener) }
+}
+```
+
+The ViewModel then consumes these the same way as any other Flow — `flatMapLatest`, `stateIn`, `asUiState()`. The callback boundary stops at the repo.
+
 ## When to break the rule
 
 One-shot fire-and-forget events (analytics hit, post a command, delete a row) where nothing observes a result — use `viewModelScope.launch { repo.suspendCall() }`. Don't fake a Flow for consistency.
 
 ## Anti-patterns
 
+- `viewModelScope.launch { sdk.doAsync { result -> _state.value = ... } }` — callback-inside-launch. Bridge with `suspendCancellableCoroutine` or `callbackFlow` at the repo instead.
 - `.collect { _state.value = it }` inside a ViewModel — use `.stateIn` instead.
 - `.flowOn(Dispatchers.IO)` wrapping Retrofit suspend calls — redundant; OkHttp's dispatcher already handles it.
 - `Flow<T?>` on the repository interface — null-as-sentinel in the data layer. Use `asUiState()` and let `Pending` carry the initial state.
