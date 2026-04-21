@@ -6,31 +6,29 @@ import androidx.lifecycle.viewModelScope
 import com.template.randomuser.network.RandomUser
 import com.template.randomuser.network.RandomUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val repository: RandomUserRepository,
+    repository: RandomUserRepository,
 ) : ViewModel() {
-    private val _users = MutableStateFlow<List<RandomUser>?>(null)
-    val users: StateFlow<List<RandomUser>?> = _users
+    private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1).also { it.tryEmit(Unit) }
 
-    init {
-        refreshUsers()
-    }
+    val users: StateFlow<List<RandomUser>?> =
+        refreshTrigger
+            .flatMapLatest { repository.get50RandomUsers() }
+            .catch { e -> Log.e("UserViewModel", "Error", e) }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     fun refreshUsers() {
-        viewModelScope.launch {
-            repository.get50RandomUsers()
-                .flowOn(Dispatchers.IO)
-                .catch { e -> Log.e("UserViewModel", "Error: $e") }
-                .collect { users -> _users.value = users }
-        }
+        refreshTrigger.tryEmit(Unit)
     }
 }

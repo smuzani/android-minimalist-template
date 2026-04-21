@@ -50,6 +50,7 @@ dependencies {
 
     // Lifecycle Libraries
     implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.ktx)
 
     // Networking

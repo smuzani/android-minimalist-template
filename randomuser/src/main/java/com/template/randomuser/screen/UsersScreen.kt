@@ -18,13 +18,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.template.randomuser.network.RandomUser
 import com.template.spine.Nerve
@@ -35,11 +34,7 @@ fun UsersScreen(
     onNavigateToDetails: (RandomUser) -> Unit,
     vm: UserViewModel,
 ) {
-    val usersState by vm.users.collectAsState(null)
-    val users =
-        remember(usersState) {
-            usersState ?: emptyList()
-        }
+    val users by vm.users.collectAsStateWithLifecycle()
     // Setting the title in LaunchedEffect will only happen once when they enter the screen
     LaunchedEffect(Unit) {
         nerve.setTitle("Users")
@@ -55,13 +50,13 @@ fun UsersScreen(
                 .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (usersState == null) {
+        if (users == null) {
             Text("Loading…", style = MaterialTheme.typography.displayLarge)
         } else {
             LazyColumn(
                 modifier = Modifier.padding(4.dp),
             ) {
-                items(users, key = { user -> user.id.value }) { user ->
+                items(users.orEmpty(), key = { user -> user.id.value }) { user ->
                     UserRow(user, onNavigateToDetails)
                     HorizontalDivider()
                 }

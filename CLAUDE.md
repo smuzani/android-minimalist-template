@@ -9,6 +9,7 @@ Android minimalist template focused on networking, Compose, and Flow. The archit
 ## Project-Specific Conventions
 
 - **Hilt everywhere.** Repositories and services are provided by Hilt modules — no hand-constructed singletons inside ViewModels. See [randomuser/network/NetworkModule.kt](randomuser/src/main/java/com/template/randomuser/network/NetworkModule.kt) as the template.
+- **Flow pattern.** Repositories expose cold `Flow<T>`; ViewModels expose hot `StateFlow<T>` via `.stateIn(...)`; Composables use `collectAsStateWithLifecycle()`. No bare `.collect {}` inside ViewModels. See [docs/flow-compose-patterns.md](docs/flow-compose-patterns.md).
 - **`@Parcelize` for nav args.** Types that cross a navigation boundary are `@Parcelize data class`.
 - **`Nerve` is a pragmatic hack, not an idiom.** [spine/Nerve.kt](spine/src/main/java/com/template/spine/Nerve.kt) is a mutable shared-state holder bridging scaffold ↔ screens. Use it only when a single outer `Scaffold` wraps many screens. For new features, prefer moving `Scaffold` inside each screen or hoisting an `AppBarState` the screens set via `LaunchedEffect`.
 - **Shared modules need ≥ 2 consumers.** Don't put code in `designSystem/` or `spine/` unless multiple modules use it.

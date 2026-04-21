@@ -8,21 +8,21 @@ import kotlinx.coroutines.flow.StateFlow
 // Nerve handles communication between the lower level screens and the top level (scaffold)
 class Nerve {
     // Used as Flow because we want it to change on UI as soon as it changes
-    private var _title = MutableStateFlow("")
+    private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
 
     fun setTitle(title: String) {
         _title.value = title
     }
 
-    private var _bottomBarButtonText = MutableStateFlow("")
+    private val _bottomBarButtonText = MutableStateFlow("")
     val bottomBarButtonText: StateFlow<String> = _bottomBarButtonText
 
     fun setBottomBarButtonText(text: String) {
         _bottomBarButtonText.value = text
     }
 
-    private var _onBottomBarButtonClicked = MutableStateFlow { }
+    private val _onBottomBarButtonClicked = MutableStateFlow { }
     val onBottomBarButtonClicked: StateFlow<() -> Unit> = _onBottomBarButtonClicked
 
     fun setOnBottomBarButtonClicked(onClick: () -> Unit) {
