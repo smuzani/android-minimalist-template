@@ -125,7 +125,7 @@ obj/
 .idea/jarRepositories.xml
 .idea/navEditor.xml
 
-.claude
+.claude/settings.local.json
 
 # OS-specific files
 .DS_Store
