@@ -35,6 +35,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.compose.ui)
     implementation(libs.compose.material3.android)
+    implementation(libs.lifecycle.runtime.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

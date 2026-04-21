@@ -2,6 +2,7 @@ package com.template.randomuser.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.template.randomuser.network.RandomUser
 import com.template.spine.Nerve
+import com.template.spine.UiState
 
 @Composable
 fun UsersScreen(
@@ -34,8 +36,7 @@ fun UsersScreen(
     onNavigateToDetails: (RandomUser) -> Unit,
     vm: UserViewModel,
 ) {
-    val users by vm.users.collectAsStateWithLifecycle()
-    // Setting the title in LaunchedEffect will only happen once when they enter the screen
+    val state by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
         nerve.setTitle("Users")
         nerve.setBottomBarButtonText("Get Users")
@@ -50,17 +51,30 @@ fun UsersScreen(
                 .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        if (users == null) {
-            Text("Loading…", style = MaterialTheme.typography.displayLarge)
-        } else {
-            LazyColumn(
-                modifier = Modifier.padding(4.dp),
-            ) {
-                items(users.orEmpty(), key = { user -> user.id.value }) { user ->
-                    UserRow(user, onNavigateToDetails)
-                    HorizontalDivider()
+        when (val s = state) {
+            is UiState.Pending ->
+                Text("Loading…", style = MaterialTheme.typography.displayLarge)
+
+            is UiState.Done ->
+                LazyColumn(
+                    modifier = Modifier.padding(4.dp),
+                ) {
+                    items(s.data, key = { user -> user.id.value }) { user ->
+                        UserRow(user, onNavigateToDetails)
+                        HorizontalDivider()
+                    }
                 }
-            }
+
+            is UiState.Failed ->
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text("Couldn't load users", style = MaterialTheme.typography.headlineMedium)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(s.message, style = MaterialTheme.typography.bodyMedium)
+                }
         }
     }
 }

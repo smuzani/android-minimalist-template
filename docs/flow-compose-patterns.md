@@ -3,7 +3,7 @@
 The rule for this template:
 
 - **Repositories return cold `Flow<T>`.** Cold Flows compose — `combine`, `flatMapLatest`, cache-then-network, merging across repos.
-- **ViewModels expose hot `StateFlow<T>`** built with `.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initial)`. No bare `viewModelScope.launch { flow.collect { ... } }`.
+- **ViewModels expose hot `StateFlow<UiState<T>>`** built with `.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState.Pending())`. No bare `viewModelScope.launch { flow.collect { ... } }`.
 - **Screens collect with `collectAsStateWithLifecycle()`.** Lifecycle-aware; stops when backgrounded.
 
 ## The three layers
@@ -24,7 +24,7 @@ class RandomUserRepositoryImpl(private val service: RandomUserService) : RandomU
 
 No `flowOn(Dispatchers.IO)` — Retrofit's `suspend` functions already dispatch on OkHttp's pool.
 
-### ViewModel — `stateIn`, trigger flow for imperative refresh
+### ViewModel — `asUiState()`, trigger flow for imperative refresh
 
 ```kotlin
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,42 +34,85 @@ class UserViewModel @Inject constructor(
 ) : ViewModel() {
     private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1).also { it.tryEmit(Unit) }
 
-    val users: StateFlow<List<RandomUser>?> = refreshTrigger
-        .flatMapLatest { repository.get50RandomUsers() }
-        .catch { e -> Log.e("UserViewModel", "Error", e) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    val uiState: StateFlow<UiState<List<RandomUser>>> = refreshTrigger
+        .flatMapLatest { repository.get50RandomUsers().asUiState() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState.Pending())
 
     fun refreshUsers() { refreshTrigger.tryEmit(Unit) }
 }
 ```
 
-- `MutableSharedFlow<Unit>(replay = 1)` seeds the first emission in `init`; tapping the refresh button re-emits.
+- `asUiState()` wraps the repo Flow: emits `Pending` on start, `Done(data)` on success, `Failed(message)` on error.
+- `MutableSharedFlow<Unit>(replay = 1)` seeds the first emission; tapping the refresh button re-emits.
 - `flatMapLatest` cancels any in-flight request when a new trigger arrives.
-- `.catch` handles errors inside the pipeline (no `runCatching`, no `try/catch`).
 - `WhileSubscribed(5_000)` keeps the flow alive across brief recompositions / config changes, tears down if nothing subscribes for 5 s.
-- The initial `null` is the "not loaded yet" signal — see *Why no sealed `UiState`* below.
 
-### Screen — `collectAsStateWithLifecycle`
+### Screen — `collectAsStateWithLifecycle`, `when` on state
 
 ```kotlin
-val users by vm.users.collectAsStateWithLifecycle()
+val state by vm.uiState.collectAsStateWithLifecycle()
 
-if (users == null) {
-    Text("Loading…", style = MaterialTheme.typography.displayLarge)
-} else {
-    LazyColumn {
-        items(users.orEmpty(), key = { it.id.value }) { user ->
-            UserRow(user, onNavigateToDetails)
-        }
+when (val s = state) {
+    is UiState.Pending -> Text("Loading…")
+    is UiState.Done -> LazyColumn {
+        items(s.data, key = { it.id.value }) { user -> UserRow(user, onNavigate) }
     }
+    is UiState.Failed -> Text(s.message)
 }
 ```
 
-No initial-value argument — `StateFlow` already carries one.
+## `UiState<T>` — the shared async state type
+
+All async UI state flows through `UiState<T>` in `spine/`:
+
+```kotlin
+sealed interface UiState<out T> {
+    data class Pending<T>(val previous: T? = null) : UiState<T>
+    data class Done<T>(val data: T) : UiState<T>
+    data class Failed(val message: String) : UiState<Nothing>
+}
+```
+
+**Why Pending / Done / Failed** — symmetric vocabulary, all expressing "has this settled?". Loading/Success/Error mixes grammatical forms and `Error` collides with Kotlin's `kotlin.Error` Throwable. `Done` and `Failed` are unambiguous terminal states; `Pending` is unambiguous non-terminal.
+
+**`Pending(previous: T?)`** handles the refresh case. `Pending(previous = null)` is initial load (spinner, no data). `Pending(previous = lastList)` is pull-to-refresh (show old list + spinner). The UI checks `s.previous != null` to decide.
+
+**`asUiState()` extension** lives alongside the type in `spine/UiState.kt`:
+
+```kotlin
+fun <T> Flow<T>.asUiState(): Flow<UiState<T>> = this
+    .map<T, UiState<T>> { UiState.Done(it) }
+    .onStart { emit(UiState.Pending()) }
+    .catch { emit(UiState.Failed(it.message ?: "Something went wrong")) }
+```
+
+### When to define a per-screen sealed class instead
+
+`UiState<T>` covers the 80% case. Define your own sealed class when:
+
+- You need `Empty` as distinct from `Done(emptyList())` — different UX copy, different illustration.
+- You need `Refreshing` with visible progress over old data AND you need the type to encode it (vs. `Pending(previous)`).
+- You need typed errors: `NetworkError` / `AuthError` / `ParseError` — not just a string message.
+- You need an `Idle` state for screens that don't load until the user acts (search screens).
+
+In these cases, define a per-screen sealed interface next to the ViewModel and don't involve `UiState<T>`.
+
+### Don't split `when` branches into separate Composables
+
+```kotlin
+// Don't do this unless a branch is genuinely complex (>~20 lines)
+when (val s = state) {
+    is UiState.Pending -> UsersLoadingScreen()
+    is UiState.Done -> UsersSuccessScreen(s.data, onNavigate)
+    is UiState.Failed -> UsersErrorScreen(s.message)
+}
+```
+
+CLAUDE.md's helper-extraction rule applies to Composables — reuse ≥ 2 places, or the block is opaque. A 5-line `Text(...)` or `Column { Text; Text }` clears neither bar. Extract *a specific branch* when it grows, not all branches preemptively.
 
 ## Combining sources
 
-Combining is the payoff for the cold-Flow choice. Example — merging a cached DB stream with a network refresh:
+Combining is the payoff for the cold-Flow choice at the repo layer:
 
 ```kotlin
 fun users(): Flow<List<User>> = combine(
@@ -78,32 +121,17 @@ fun users(): Flow<List<User>> = combine(
 ) { cached, fresh -> fresh.ifEmpty { cached } }
 ```
 
-If this had been `suspend fun users(): List<User>` at the repo, you couldn't express it without awkward glue in the ViewModel.
+If this had been `suspend fun users(): List<User>`, you couldn't express it without awkward glue in the ViewModel.
 
 ## When to break the rule
 
-One-shot fire-and-forget events (log an analytics hit, post a command, delete a row) where nothing observes a result — use a plain `suspend fun` and `viewModelScope.launch { repo.call() }`. Don't fake a Flow just to stay consistent.
-
-## Why no sealed `UiState`
-
-The template uses `StateFlow<T?>` where `null` means "not loaded yet", rather than:
-
-```kotlin
-sealed class UiState<T> { object Loading; data class Success<T>(...); data class Error(...) }
-```
-
-Reach for the sealed version when you have:
-
-- Real error UI (retry button, error banner, differentiated messages).
-- Refresh-while-keeping-old-data (need `Loading` + prior `Success` simultaneously).
-- ≥ 2 screens sharing the shape — the abstraction earns its keep once it's used twice.
-
-Until then, `T?` is enough and keeps the `when`-ladders out of every screen.
+One-shot fire-and-forget events (analytics hit, post a command, delete a row) where nothing observes a result — use `viewModelScope.launch { repo.suspendCall() }`. Don't fake a Flow for consistency.
 
 ## Anti-patterns
 
 - `.collect { _state.value = it }` inside a ViewModel — use `.stateIn` instead.
-- `.flowOn(Dispatchers.IO)` wrapping Retrofit suspend calls — redundant.
-- `Flow<T?>` on the repository interface — null-as-sentinel in the data layer. Loading belongs in the VM's initial `stateIn` value.
+- `.flowOn(Dispatchers.IO)` wrapping Retrofit suspend calls — redundant; OkHttp's dispatcher already handles it.
+- `Flow<T?>` on the repository interface — null-as-sentinel in the data layer. Use `asUiState()` and let `Pending` carry the initial state.
+- `.catch { Log.e(...) }` without `emit(...)` — the flow terminates silently and the UI stays on its initial `stateIn` value forever. `asUiState()` handles this correctly.
 - `collectAsState()` in a Composable — use `collectAsStateWithLifecycle()`.
 - `remember(x) { x ?: default }` — recomputes on every change; just write `x ?: default`.
